@@ -1,128 +1,155 @@
-юот для распознавани лиц
+# Face Recognition Bot for Social and Law Enforcement Services
 
-для установки докер контейнера необходимо установка Докер на компе https://www.docker.com/products/docker-desktop/
-для устновки не сервер необходимо ставить докер на сервер:
-               Для установки Docker на Ubuntu вы можете выполнить следующие шаги. Откройте терминал и выполните следующие команды по порядку:
+This project demonstrates a Telegram bot designed for facial recognition purposes. The bot enables users to process images, recognize faces, and manage a secure database of individuals for social and law enforcement applications. Built as an educational initiative within the FAI curriculum, it showcases modern AI technologies, development best practices, and ethical considerations.
 
-            1. Обновите индекс пакетов:
-               
-               sudo apt update
-               
+---
 
-            2. Установите необходимые пакеты для добавления нового репозитория через HTTPS:
-               
-               sudo apt install apt-transport-https ca-certificates curl software-properties-common
-               
+## Project Goals and Objectives
 
-            3. Добавьте GPG-ключ Docker:
-               
-               curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-               
+### Goals:
+- **Educational Value**: Provide a practical implementation of AI and machine learning concepts for face recognition.
+- **Demonstrate Technologies**: Showcase the integration of neural networks, database management, and secure development practices.
+- **Address Real-World Problems**: Support use cases like assisting vulnerable populations and identifying individuals in emergencies.
 
-            4. Добавьте репозиторий Docker в список источников:
-               
-               sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-               
+### Objectives:
+1. Develop a Telegram bot capable of recognizing faces from images.
+2. Use ArcFace, a state-of-the-art neural network, for generating high-dimensional facial embeddings.
+3. Implement secure, scalable database operations for face data storage and retrieval.
+4. Ensure the project aligns with ethical standards, including user privacy and data protection.
 
-            5. Снова обновите индекс пакетов:
-               
-               sudo apt update
-               
+---
 
-            6. Установите Docker:
-               
-               sudo apt install docker-ce
-               
+## Technologies Used
 
-            7. Проверьте, что Docker установлен и работает:
-               
-               sudo systemctl status docker
-               
+1. **Programming Languages**: Python.
+2. **Machine Learning**: ArcFace for facial embedding.
+3. **Database**:
+   - SQLite for local data storage.
+   - SQLAlchemy for ORM.
+4. **Telegram Integration**: Using `python-telegram-bot` library.
+5. **Docker**:
+   - Docker images for deployment.
+   - Docker Compose for managing multi-container environments.
+6. **Libraries and Tools**:
+   - `opencv-python` for image processing.
+   - `insightface` for facial analysis.
+   - `torch` and `onnxruntime` for neural network operations.
 
-            Если вы хотите запускать Docker без sudo, добавьте своего пользователя в группу docker:
-            sudo usermod -aG docker $USER
+---
 
-создаю образ :
-   docker build -t face_check1 . 
+## Features
 
-проверка докера 
+- **Facial Recognition**: Identifies individuals using cosine similarity of facial embeddings.
+- **Image Handling**: Processes photos, detects faces, and extracts embeddings.
+- **Database Operations**: Allows adding, updating, and querying face data securely.
+- **Ethical Safeguards**:
+   - Restricted access to the bot.
+   - Logs for accountability.
+   - Data removal upon user request.
+- **User Interaction**: Guided data input with Telegram bot commands.
+
+---
+
+## Installation and Deployment
+
+### Prerequisites
+- Docker installed on your system.
+  - For desktops: [Docker Desktop](https://www.docker.com/products/docker-desktop).
+  - For servers (Ubuntu):
+    ```bash
+    sudo apt update
+    sudo apt install apt-transport-https ca-certificates curl software-properties-common
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    sudo apt update
+    sudo apt install docker-ce
+    sudo systemctl status docker
+    sudo usermod -aG docker $USER
+    ```
+
+### Build Docker Image
+1. Clone the repository and navigate to the project folder:
+   ```bash
+   git clone <repository_url>
+   cd <repository_folder>
+   ```
+2. Build the Docker image:
+   ```bash
+   docker build -t face_recognition_bot .
+   ```
+3. Verify the image:
+   ```bash
    docker images
+   ```
 
-запуск контейнера 
-   docker run -d face_check1 // название образа (image) после d
+### Run the Docker Container
+1. Start the bot:
+   ```bash
+   docker run -d face_recognition_bot
+   ```
+2. Check running containers:
+   ```bash
+   docker ps
+   ```
 
-   проверка запущенных контейнеров
-      docker ps // если добавтьб "-a" то покажет остановленные контейнеры
+---
 
+## Deployment to Server
+1. Tag the Docker image:
+   ```bash
+   docker tag face_recognition_bot username/face_recognition_bot:latest
+   ```
+2. Push the image to Docker Hub:
+   ```bash
+   docker login
+   docker push username/face_recognition_bot:latest
+   ```
+3. Pull the image on the server:
+   ```bash
+   docker pull username/face_recognition_bot:latest
+   ```
 
-
-################################деплоим образ##############################################
-
-
-docker images
-
-Эта команда выведет список всех доступных образов, включая их имена, теги и идентификаторы.
-
-Пример:
-PS C:\microblog\bots\face_checker> docker images
-REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
-fix1         latest    de719e5e3feb   3 minutes ago   11.3GB
-
-Тегирование образа: Выполни следующую команду для тегирования образа:
-
-
-
-docker tag fix1 levsha11/fix1:latest
-
-Загрузка образа на Docker Hub: После этого загрузи образ с помощью команды:
-
-
-
-    docker push levsha11/fix1:latest
-
-Убедись, что ты вошел в свою учетную запись Docker Hub, выполнив команду:
-
-
-
-docker login
-
-Если все прошло успешно, твой образ должен загрузиться на Docker Hub. 
-
-
-################################# Заливаем все на сервер ######################################
-
-
-docker pull levsha11/fix1:latest
-
-
-
-#####################################  вносим изменения в docker-compose.yml присваивая ему имя docker-compose1.yml #######################
-
+### Using Docker Compose
+Create a `docker-compose.yml` file:
+```yaml
 version: '3.8'
 
 services:
-  checker_bot:
-    image: levsha11/fix1:latest  # Обновлено имя образа
-    container_name: checker_bot
+  face_recognition_bot:
+    image: username/face_recognition_bot:latest
+    container_name: face_recognition_bot
     volumes:
-      - /var/www/face_checker_bot/facechecker_data:/app/resources
-      - /var/www/face_checker_bot/token.txt:/app/token.txt  # Монтируем файл токенов внутрь контейнера
+      - ./resources:/app/resources
+      - ./token.txt:/app/token.txt
     restart: unless-stopped
+```
+Deploy:
+```bash
+sudo docker compose up -d
+```
 
-  admin_bot:
-    image: levsha11/fix1:latest  # Обновлено имя образа
-    container_name: admin_bot
-    volumes:
-      - /var/www/face_checker_bot/facechecker_data:/app/resources
-      - /var/www/face_checker_bot/token.txt:/app/token.txt
-    restart: unless-stopped
+---
 
+## Future Enhancements
+- **Scalability**: Adding support for Kubernetes deployments.
+- **Improved Search**: Implementing Locality-Sensitive Hashing for faster database queries.
+- **Advanced Features**: Multi-face recognition and support for larger datasets.
+- **Enhanced Security**: Integrating TLS for secure communication.
 
-проходим в идекторию где у нас все лежит 
-cd /var/www/face_checker_bot
-останавливаем старый докер
-sudo docker compose -f docker-compose.yml down
+---
 
-запускаем новый
-sudo docker compose -f docker-compose1.yml up -d
+## Ethical Considerations
+- Respect user privacy by restricting access and encrypting data.
+- Ensure transparency by logging all actions.
+- Provide users with the ability to manage their data.
+
+---
+
+## References
+1. Guo, Y., Zhang, L., Hu, Y., He, X., & Gao, J. (2020). ArcFace: Additive Angular Margin Loss for Deep Face Recognition. IEEE Transactions on Pattern Analysis and Machine Intelligence, 42(5), 1428-1442.
+2. Luckin, R., Holmes, W., Griffiths, M., & Forcier, L. B. (2016). Intelligence Unleashed: An Argument for AI in Education. Pearson Education.
+
+---
+
+For questions or issues, please contact [@Alex_Grii](https://t.me/Alex_Grii).
 
