@@ -1,39 +1,40 @@
 import os
 
-# Путь к корневой директории проекта
+# Path to the root directory of the project
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Путь к директории resources, где хранятся базы данных и фотографии
+# Path to the resources directory where databases and photos are stored
 RESOURCES_DIR = os.path.join(BASE_DIR, 'resources')
 
-# Путь к папке DB в resources
+# Path to the DB folder inside resources
 DB_DIR = os.path.join(RESOURCES_DIR, 'DB')
 
-# Путь к папке для хранения фотографий
+# Path to the folder for storing photos
 PHOTOS_DIR = os.path.join(RESOURCES_DIR, 'photos')
 
-# Путь к временной папке temp
+# Path to the temporary folder
 TEMP_DIR = os.path.join(RESOURCES_DIR, 'temp')
 
+# Path to the models directory
 MODELS_DIR = os.path.join(BASE_DIR, 'models')
 
-# Определяем токен для админского бота
+# Define the environment variable for the admin bot token
 TOKEN_ENV_VAR = "TELEGRAM_BOT_TOKEN_CHECKER"
 
-# Пробуем получить токен из переменной окружения
+# Attempt to retrieve the token from the environment variable
 token = os.getenv(TOKEN_ENV_VAR)
 
 if not token:
-    # Если токен не найден в ENV, пытаемся загрузить его из текстового файла
+    # If the token is not found in the environment, attempt to load it from a text file
     try:
         token_file_path = os.path.join(BASE_DIR, 'token.txt')
         with open(token_file_path, 'r') as f:
-            # Парсим строку вида checker=токен
+            # Parse the file for a line starting with "checker="
             for line in f:
                 if line.startswith("checker="):
                     token = line.split('=')[1].strip()
                     break
         if not token:
-            raise ValueError(f"Токен для админского бота не найден в файле.")
+            raise ValueError("The admin bot token was not found in the file.")
     except FileNotFoundError:
-        raise ValueError(f"Файл для админского бота не найден.")
+        raise ValueError("The admin bot token file was not found.")
