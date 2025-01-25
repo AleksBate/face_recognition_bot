@@ -1,0 +1,21 @@
+# Ignore PyCharm project files
+.idea/
+.vscode
+
+# Папка с данными
+models
+resources
+temp img
+
+
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore log files
+*.log
+
+# Ignore environment and dependency files
+venv/
+.env
+*.env

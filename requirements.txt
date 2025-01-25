@@ -1,0 +1,9 @@
+numpy==1.23.0
+SQLAlchemy==1.4.36
+opencv-python==4.10.0.82
+python-telegram-bot==20.0
+pytz
+insightface
+torch
+onnxruntime
+asyncio
