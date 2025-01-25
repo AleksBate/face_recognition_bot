@@ -1,7 +1,7 @@
-# Используем базовый образ с Python 3.12
+# Use base image with Python 3.9 (note: the tag mentions 3.9 instead of 3.12)
 FROM python:3.9-slim
 
-# Устанавливаем необходимые пакеты для компиляции C зависимостей и OpenCV
+# Install necessary packages for compiling C dependencies and OpenCV
 RUN apt-get update && apt-get install -y \
     build-essential \
     cmake \
@@ -17,26 +17,23 @@ RUN apt-get update && apt-get install -y \
     libglib2.0-0 \
     && apt-get clean
 
-# Устанавливаем рабочую директорию
+# Set the working directory
 WORKDIR /app/src
 
-# Копируем только requirements.txt для кэширования слоев с зависимостями
+# Copy only requirements.txt to cache dependency installation layers
 COPY requirements.txt ..
 
-# Устанавливаем зависимости до копирования кода проекта
+# Install dependencies before copying project code
 RUN pip install --upgrade pip && pip install -r ../requirements.txt
 
-# Копируем файлы проекта из текущей дирректории в текущую директорию образа
-
+# Copy project files from the current directory to the image's current directory
 COPY models ../models
 COPY resources ../resources
 ENV PYTHONPATH=/app:/app/src
-
 
 COPY src .
 COPY config.py ..
 COPY token.txt ..
 
-# Указываем команду для запуска приложения
+# Specify the command to run the application
 CMD ["sh", "-c", "python main.py || sleep infinity"]
-
