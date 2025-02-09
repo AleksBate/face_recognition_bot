@@ -11,66 +11,53 @@ from src.utils import is_user_authorized
 from config import token
 
 
-
-
-
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.message.from_user.id  # Получаем ID пользователя
+    user_id = update.message.from_user.id  # Get user ID
     context.user_data.clear()
-    # Проверяем, авторизован ли пользователь
+    # Check if the user is authorized
     if not context.user_data.get('authorized'):
         if is_user_authorized(user_id):
-            context.user_data['authorized'] = True  # Сохраняем информацию об авторизации
+            context.user_data['authorized'] = True  # Store authorization info
         else:
-            await update.message.reply_text("Этот бот не для широкого круга лиц. Для авторизации свяжитесь с пользователем @episcop_py")
-            return  # Останавливаем выполнение функции, если пользователь не авторизован
-    await update.message.reply_text("Привет! Пожалуйста, отправьте изображение.")
+            await update.message.reply_text(
+                "This bot is not for the general public. To get authorization, contact @episcop_py")
+            return  # Stop execution if the user is not authorized
+    await update.message.reply_text("Hello! Please send an image.")
+
 
 async def help(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
-    user_id = update.message.from_user.id  # Получаем ID пользователя
-    
-    # Проверяем, авторизован ли пользователь
+    user_id = update.message.from_user.id  # Get user ID
+
+    # Check if the user is authorized
     if not context.user_data.get('authorized'):
         if is_user_authorized(user_id):
-            context.user_data['authorized'] = True  # Сохраняем информацию об авторизации
+            context.user_data['authorized'] = True  # Store authorization info
         else:
-            await update.message.reply_text("Этот бот не для широкого круга лиц. Для авторизации свяжитесь с пользователем @episcop_py")
-            return  # Останавливаем выполнение функции, если пользователь не авторизован
+            await update.message.reply_text(
+                "This bot is not for the general public. To get authorization, contact @episcop_py")
+            return  # Stop execution if the user is not authorized
 
-    # Текст помощи
+    # Help text
     help_text = (
-        "👤 **Помощь по работе с ботом распознавания лиц**\n\n"
-        "Добро пожаловать в нашего бота! Этот бот поможет вам распознавать лица, представляющие оперативный интерес, на изображениях.\n\n"
-        "🔍 **Как работает бот:**\n"
-        "1. Отправьте изображение с лицом, которое вы хотите распознать.\n"
-        "2. Бот проверит наличие этого лица в базе данных.\n"
-        "3. Если лицо найдено, вы получите информацию о нем. Если нет — соответствующее сообщение и предложение добавить лицо.\n\n"
-        "📥 **Как добавить лицо:**\n"
-        "1. Для добавления нового лица следуйте инструкциям бота.\n"
-        "2. Помните, что добавляя лицо, вы пополняете базу данных. Тем самым возможно в будущем вам скажут спасибо за проявленную ответственность сейчас.\n"
-        "3. При введении данных будьте внимательны.\n"
-        "4. После успешного добавления вы получите подтверждение.\n\n"
-        "❓ **Дополнительные команды:**\n"
-        "- `/start` — начать работу с ботом.\n"
-        "- `/help` — получить эту помощь.\n\n"
-        "В настоящее время это версия V1.1. Бот несовершенен, но он постоянно дорабатывается в свободное от основной работы время.\n"
-        "Не забудь поделиться ссылкой на бот с коллегами. Ведь чем быстрее мы наполним базу тем легче будет всем.\n"
-        "Если у вас возникли вопросы или вы столкнулись с ошибками кода, не стесняйтесь спрашивать! С уважением, @episcop_py"
-
+        "👤 **Helping the Homeless and Vulnerable Individuals**\n\n"
+        "This bot is designed to assist in identifying individuals in need of social services and reconnecting them with support networks.\n\n"
+        "🔍 **How the bot works:**\n"
+        "1. Upload a photo of the individual in need.\n"
+        "2. The bot will attempt to identify the person using a secure database.\n"
+        "3. If a match is found, relevant information will be provided to assist in locating support services. If no match is found, you may add the individual to the database.\n\n"
+        "📥 **How to add a person:**\n"
+        "1. Follow the bot’s instructions to add an individual to the database.\n"
+        "2. Ensure accuracy in the details provided to improve identification efforts.\n"
+        "3. Once successfully added, the information will be available to authorized personnel helping to reconnect people with their families and support organizations.\n\n"
+        "❓ **Additional commands:**\n"
+        "- `/start` — Start interacting with the bot.\n"
+        "- `/help` — Get this help message.\n\n"
+        "This project is constantly evolving to better assist those in need. By contributing, you help create a stronger network for social aid.\n"
+        "If you have questions or suggestions for improvement, please reach out. Regards, @episcop_py"
     )
-    
+
     await update.message.reply_text(help_text, parse_mode='HTML')
 
-#user_ids = set()
-
-#async def send_weekly_message(context: ContextTypes.DEFAULT_TYPE):
-#    while True:
-#        for user_id in user_ids:
-#            await context.bot.send_message(chat_id=user_id, text="Доброго дня. Не забывайте пополнять базу данных, ведь это важно в нашей работе.")
-#      await asyncio.sleep(604800)  # Ждем 604800 секунд (1 неделя)
-
-#async def start_sending_messages(context: ContextTypes.DEFAULT_TYPE):
-#    await send_weekly_message(context)
 
 def main() -> None:
     init_all_db()
@@ -85,12 +72,8 @@ def main() -> None:
     application.add_handler(CallbackQueryHandler(cancel_additional_photo_handler, pattern='no_additional_photo'))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, text_input_handler))
 
-    # Запускаем задачу отправки сообщений после запуска приложения
-    #application.add_handler(CommandHandler("start", lambda update, context: asyncio.create_task(start_sending_messages(context))))
-
     application.run_polling()
+
 
 if __name__ == '__main__':
     main()
-
-
