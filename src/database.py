@@ -5,31 +5,31 @@ import sqlite3
 import os
 
 
-FACES_DB_PATH = os.path.join(DB_DIR, 'faces.db')  # Полный путь к файлу базы данных для лиц
-USERS_DB_PATH = os.path.join(DB_DIR, 'users.db')  # Полный путь к файлу базы данных для пользователей
+FACES_DB_PATH = os.path.join(DB_DIR, 'faces.db')  # Full path to the faces database file
+USERS_DB_PATH = os.path.join(DB_DIR, 'users.db')  # Full path to the users database file
 
-# Проверка существования папки DB и создание, если её нет
+# Check if the DB folder exists, create it if not
 if not os.path.exists(DB_DIR):
     os.makedirs(DB_DIR)
-    print(f"Папка 'DB' создана по пути {DB_DIR}")
+    print(f"Folder 'DB' created at {DB_DIR}")
 
-# Подключение к базе данных для лиц через SQLAlchemy
+# Connect to the faces database using SQLAlchemy
 Base = declarative_base()
 faces_engine = create_engine(f"sqlite:///{FACES_DB_PATH}")
 SessionLocal = sessionmaker(bind=faces_engine)
 
 def get_session():
-    """Возвращает сессию для работы с базой данных"""
+    """Returns a session for database operations"""
     return SessionLocal()
 
-# Проверка существования папки для хранения фото и её создание
+# Check if the photos directory exists, create it if not
 if not os.path.exists(PHOTOS_DIR):
     os.makedirs(PHOTOS_DIR)
-    print(f"Папка 'photos' создана по пути {PHOTOS_DIR}")
+    print(f"Folder 'photos' created at {PHOTOS_DIR}")
 else:
-    print(f"Папка 'photos' существовала по пути {PHOTOS_DIR}")
+    print(f"Folder 'photos' already exists at {PHOTOS_DIR}")
 
-# Модель для таблицы лиц (faces)
+# Model for the faces table
 class FaceEmbedding(Base):
     __tablename__ = 'faces'
     id = Column(Integer, primary_key=True)
@@ -44,12 +44,12 @@ class FaceEmbedding(Base):
     added_by = Column(String)
 
 def init_faces_db():
-    """Инициализирует таблицу лиц"""
+    """Initializes the faces table"""
     Base.metadata.create_all(faces_engine)
-    print("Таблица лиц (faces) инициализирована.")
+    print("Faces table initialized.")
 
 def init_users_db():
-    """Инициализирует таблицу пользователей через sqlite3"""
+    """Initializes the users table using sqlite3"""
     conn = sqlite3.connect(USERS_DB_PATH)
     cursor = conn.cursor()
     cursor.execute('''
@@ -65,10 +65,10 @@ def init_users_db():
     ''')
     conn.commit()
     conn.close()
-    print("Таблица пользователей (users) инициализирована.")
+    print("Users table initialized.")
 
 def init_all_db():
-    """Инициализирует все базы данных"""
-    init_faces_db()  # Инициализация базы данных лиц через SQLAlchemy
-    init_users_db()  # Инициализация базы данных пользователей через sqlite3
-    print("Все базы данных успешно инициализированы.")
+    """Initializes all databases"""
+    init_faces_db()  # Initialize faces database using SQLAlchemy
+    init_users_db()  # Initialize users database using sqlite3
+    print("All databases successfully initialized.")

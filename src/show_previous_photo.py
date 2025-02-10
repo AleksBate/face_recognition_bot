@@ -5,27 +5,27 @@ from config import PHOTOS_DIR
 
 
 async def show_previous_photos(update: Update, context: CallbackContext, face_id: int, last_name: str, first_name: str):
-    """Функция для отображения предыдущих фото пользователя, начиная с самых новых"""
-    # Путь к папке с фотографиями
+    """Function to display a user's previous photos, starting from the most recent."""
+    # Path to the folder containing photos
     folder_path = os.path.join(PHOTOS_DIR, f'{face_id}+{last_name}+{first_name}')
 
-    # Проверяем, существует ли папка
+    # Check if the folder exists
     if not os.path.exists(folder_path):
-        await update.message.reply_text("Фотографии не найдены.")
+        await update.message.reply_text("No photos found.")
         return
 
-    # Получаем список всех файлов в папке и сортируем их в обратном порядке для показа с самых свежих
+    # Retrieve all files in the folder and sort them in reverse order to show the latest first
     photo_files = sorted(os.listdir(folder_path), reverse=True)
 
-    # Проходим по всем файлам в папке
+    # Iterate through all files in the folder
     for photo_file in photo_files:
-        # Извлекаем дату из имени файла (формат: photo_YYYY-MM-DD_HH-MM-SS.jpg)
-        file_name = os.path.splitext(photo_file)[0]  # Убираем расширение
-        photo_date = file_name.split('_')[1]  # Извлекаем часть с датой
+        # Extract the date from the filename (format: photo_YYYY-MM-DD_HH-MM-SS.jpg)
+        file_name = os.path.splitext(photo_file)[0]  # Remove the extension
+        photo_date = file_name.split('_')[1]  # Extract the date part
 
-        # Отправляем сообщение с датой
-        await update.message.reply_text(f"Фото от {photo_date}")
+        # Send a message with the date
+        await update.message.reply_text(f"Photo from {photo_date}")
 
-        # Отправляем само фото
+        # Send the actual photo
         photo_path = os.path.join(folder_path, photo_file)
         await update.message.reply_photo(photo=open(photo_path, 'rb'))
